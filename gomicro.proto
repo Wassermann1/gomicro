@@ -1,0 +1,76 @@
+syntax = "proto3";
+option go_package = "github.com/Wassermann1/gomicro";
+package gomicro;
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+// Request for geocoding and reverse geocoding operations.
+message GeoRequest {
+    oneof request_type {
+        string query = 1;       // Address query for GetAddress
+        Coordinates coords = 2; // Coordinates for GetGeocode
+    }
+}
+
+// Represents geographic coordinates.
+message Coordinates {
+    string latitude = 1;  // Latitude value
+    string longitude = 2; // Longitude value
+}
+
+message Address {
+    string city = 1;   // Corresponds to the City field in Go
+    string street = 2; // Corresponds to the Street field in Go
+    string house = 3;  // Corresponds to the House field in Go
+    string lat = 4;    // Corresponds to the Lat field in Go
+    string lon = 5;    // Corresponds to the Lon field in Go
+}
+
+message GeoResponse {
+    repeated Address addresses = 1; // Address list
+}
+
+service Geo {
+    rpc GetAddress(GeoRequest) returns (GeoResponse) {}
+    rpc GetGeocode(GeoRequest) returns (GeoResponse) {}
+}
+
+message AuthRequest {
+    string email =1; // Email to register/authenticate
+    string password = 2; // Password to register/authenticate
+}
+
+message AuthResponse {
+    int32 code = 1; // Result code of auth operation
+    string token = 2; // JWT token encrypted
+}
+
+service Auth {
+    rpc Register(AuthRequest) returns (AuthResponse) {}
+    rpc Login(AuthRequest) returns (AuthResponse) {}
+}
+
+message UserRequest {
+    int32 id = 1;
+}
+
+message UserResponse {
+    UserData user = 1;
+        
+}
+message ListUserResponse {
+    repeated UserData list = 1;
+}
+
+message UserData {
+    int32 id = 1;
+    string name = 2;
+    string email = 3;
+    google.protobuf.Timestamp registered = 4;
+
+}
+
+service User {
+    rpc Profile(UserRequest) returns (UserResponse) {}
+    rpc List(google.protobuf.Empty) returns (ListUserResponse) {}
+}
