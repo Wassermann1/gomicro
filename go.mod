@@ -1,4 +1,4 @@
-module gomicro
+module github.com/Wassermann1/gomicro
 
 go 1.24.0
 
